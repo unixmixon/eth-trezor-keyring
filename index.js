@@ -1,7 +1,7 @@
 const { EventEmitter } = require('events');
 const ethUtil = require('ethereumjs-util');
 const HDKey = require('hdkey');
-const TrezorConnect = require('@trezor/connect').default;
+const TrezorConnect = require('@trezor/connect-web').default;
 const { TransactionFactory } = require('@ethereumjs/tx');
 const transformTypedData = require('@trezor/connect-plugin-ethereum').transformTypedData;
 
