@@ -1,9 +1,9 @@
 const { EventEmitter } = require('events');
 const ethUtil = require('ethereumjs-util');
 const HDKey = require('hdkey');
-const TrezorConnect = require('trezor-connect').default;
+const TrezorConnect = require('@trezor/connect').default;
 const { TransactionFactory } = require('@ethereumjs/tx');
-const transformTypedData = require('trezor-connect/lib/plugins/ethereum/typedData');
+const transformTypedData = require('@trezor/connect-plugin-ethereum').transformTypedData;
 
 const hdPathString = `m/44'/60'/0'/0`;
 const SLIP0044TestnetPath = `m/44'/1'/0'/0`;
@@ -48,6 +48,7 @@ function isOldStyleEthereumjsTx(tx) {
   return typeof tx.getChainId === 'function';
 }
 
+let trezorConnectInitiated = false;
 class TrezorKeyring extends EventEmitter {
   constructor(opts = {}) {
     super();
@@ -65,7 +66,12 @@ class TrezorKeyring extends EventEmitter {
         this.model = event.payload.features.model;
       }
     });
-    TrezorConnect.init({ manifest: TREZOR_CONNECT_MANIFEST });
+
+    if (!trezorConnectInitiated) {
+      TrezorConnect.init({ manifest: TREZOR_CONNECT_MANIFEST });
+      trezorConnectInitiated = true;
+    }
+
   }
 
   /**
